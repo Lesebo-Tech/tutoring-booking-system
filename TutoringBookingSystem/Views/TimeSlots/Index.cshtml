@@ -1,0 +1,263 @@
+﻿@model IEnumerable<TutoringBookingSystem.Models.TimeSlot>
+
+@{
+    ViewBag.Title = "Manage Sessions";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Manage Sessions</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fafbfc;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+            .sidebar .brand {
+                color: #111827;
+                font-weight: 700;
+                font-size: 1.3em;
+                padding: 0 24px 30px 24px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .sidebar .brand span {
+                    color: #4f46e5;
+                }
+
+            .sidebar nav {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex: 1;
+            }
+
+                .sidebar nav a {
+                    color: #4b5563;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.95em;
+                    font-weight: 500;
+                    border-left: 3px solid transparent;
+                }
+
+                    .sidebar nav a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar nav a.active {
+                        background-color: #eef2ff;
+                        color: #4f46e5;
+                        border-left: 3px solid #4f46e5;
+                        font-weight: 600;
+                    }
+
+            .sidebar .bottom-links {
+                border-top: 1px solid #e5e7eb;
+                padding-top: 14px;
+            }
+
+                .sidebar .bottom-links a {
+                    color: #6b7280;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.9em;
+                    display: block;
+                }
+
+                    .sidebar .bottom-links a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar .bottom-links a.logout {
+                        color: #ef4444;
+                    }
+
+                        .sidebar .bottom-links a.logout:hover {
+                            background-color: #fef2f2;
+                            color: #dc2626;
+                        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
+        .btn-primary {
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-primary:hover {
+                background-color: #4338ca;
+                color: #ffffff;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+        th {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-weight: 600;
+            text-align: left;
+            padding: 14px;
+            font-size: 0.9em;
+        }
+
+        td {
+            padding: 14px;
+            border-top: 1px solid #f3f4f6;
+            font-size: 0.95em;
+        }
+
+        .label {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .label-yes {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .label-no {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-danger:hover {
+                background-color: #dc2626;
+                color: #ffffff;
+            }
+
+        .empty-state {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 50px;
+            text-align: center;
+            color: #6b7280;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="@Url.Action("Index", "Home")" class="brand">Tutor<span>Book</span></a>
+        <nav>
+            <a href="@Url.Action("Index", "Bookings")">My Bookings</a>
+            <a href="@Url.Action("Index", "TimeSlots")">Manage Sessions</a>
+            <a href="@Url.Action("Analytics", "Bookings")">Analytics</a>
+        </nav>
+        <div class="bottom-links">
+            <a href="@Url.Action("Index", "Home")">← Back to Home</a>
+            <a href="@Url.Action("Logout", "Account")" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="top-row">
+            <h2>Manage Sessions</h2>
+            @Html.ActionLink("+ Add New Slot", "Create", null, new { @class = "btn-primary" })
+        </div>
+
+        @if (Model.Any())
+        {
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Booked?</th>
+                    <th></th>
+                </tr>
+                @foreach (var slot in Model)
+                {
+                    <tr>
+                        <td>@slot.Date.ToShortDateString()</td>
+                        <td>@slot.StartTime</td>
+                        <td>@slot.EndTime</td>
+                        <td>
+                            <span class="label @(slot.IsBooked ? "label-yes" : "label-no")">
+                                @(slot.IsBooked ? "Yes" : "No")
+                            </span>
+                        </td>
+                        <td>
+                            @Html.ActionLink("Delete", "Delete", new { id = slot.TimeSlotId }, new { @class = "btn-danger" })
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">No time slots added yet.</div>
+        }
+    </div>
+</body>
+</html>

@@ -1,33 +1,220 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "TutorBook";
+    Layout = null;
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TutorBook — Maths &amp; Maths Lit Tutoring</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fafbfc;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .navbar .brand {
+                font-weight: 700;
+                font-size: 1.3em;
+                color: #4f46e5;
+                text-decoration: none;
+            }
+
+            .navbar .nav-links a {
+                margin-left: 20px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.95em;
+            }
+
+                .navbar .nav-links a.book {
+                    background-color: #4f46e5;
+                    color: #ffffff;
+                    padding: 9px 18px;
+                    border-radius: 8px;
+                }
+
+                    .navbar .nav-links a.book:hover {
+                        background-color: #4338ca;
+                    }
+
+                .navbar .nav-links a.signin {
+                    color: #374151;
+                }
+
+                    .navbar .nav-links a.signin:hover {
+                        color: #4f46e5;
+                    }
+
+        .hero {
+            text-align: center;
+            padding: 90px 20px 70px 20px;
+            background: linear-gradient(180deg, #eef2ff 0%, #fafbfc 100%);
+        }
+
+            .hero h1 {
+                font-size: 2.6em;
+                font-weight: 800;
+                color: #111827;
+                max-width: 750px;
+                margin: 0 auto 18px auto;
+                line-height: 1.2;
+            }
+
+            .hero p {
+                max-width: 600px;
+                margin: 0 auto 30px auto;
+                color: #6b7280;
+                font-size: 1.1em;
+            }
+
+            .hero .btn {
+                display: inline-block;
+                padding: 12px 28px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 1em;
+                text-decoration: none;
+                margin: 0 8px;
+            }
+
+        .btn-primary {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+
+            .btn-primary:hover {
+                background-color: #4338ca;
+            }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+            .btn-secondary:hover {
+                background-color: #f9fafb;
+            }
+
+        .features {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 28px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+            .feature-card h3 {
+                color: #111827;
+                font-size: 1.1em;
+                font-weight: 700;
+                margin: 0 0 10px 0;
+            }
+
+            .feature-card p {
+                color: #6b7280;
+                font-size: 0.9em;
+                margin: 0;
+            }
+
+        .cta {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+            .cta h2 {
+                color: #111827;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .cta p {
+                color: #6b7280;
+                margin-bottom: 24px;
+            }
+
+        footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.85em;
+            padding: 30px 20px;
+        }
+
+        @@media (max-width: 700px) {
+            .features {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="@Url.Action("Index", "Home")" class="brand">TutorBook</a>
+        <div class="nav-links">
+            <a href="@Url.Action("Create", "Bookings")" class="book">Book a session</a>
+            <a href="@Url.Action("Login", "Account")" class="signin">Tutor sign in</a>
+        </div>
     </div>
-</main>
+
+    <div class="hero">
+        <h1>Maths &amp; Maths Lit tutoring, without the WhatsApp chaos</h1>
+        <p>I built TutorBook after losing track of one too many session requests in my own WhatsApp chats. Now students pick an open slot, I confirm it, and nothing gets lost in a scroll of messages.</p>
+        <a href="@Url.Action("Create", "Bookings")" class="btn btn-primary">Book a session</a>
+        <a href="@Url.Action("Login", "Account")" class="btn btn-secondary">Tutor sign in</a>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <h3>Real availability</h3>
+            <p>Only the slots I've actually opened up show as bookable — no guessing, no double-booking.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Clear status</h3>
+            <p>Every booking is Pending, Confirmed, Completed, or Cancelled, so you always know where you stand.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Payment tracking</h3>
+            <p>Sessions are marked Paid or Unpaid, so nothing gets forgotten on either side.</p>
+        </div>
+        <div class="feature-card">
+            <h3>One place for everything</h3>
+            <p>Your name, contact, subject and grade — kept together instead of scattered across chats.</p>
+        </div>
+    </div>
+
+    <div class="cta">
+        <h2>Currently taking Maths and Maths Lit sessions</h2>
+        <p>Pick an open slot below and I'll confirm it directly — no more waiting on a WhatsApp reply.</p>
+        <a href="@Url.Action("Create", "Bookings")" class="btn btn-primary">Book a session now</a>
+    </div>
+
+    <footer>
+        &copy; 2026 - TutorBook by Owami Mashiya
+    </footer>
+</body>
+</html>

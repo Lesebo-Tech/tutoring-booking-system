@@ -1,0 +1,306 @@
+﻿@model IEnumerable<TutoringBookingSystem.Models.Booking>
+
+@{
+    ViewBag.Title = "My Bookings";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>My Bookings</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fafbfc;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+            .sidebar .brand {
+                color: #111827;
+                font-weight: 700;
+                font-size: 1.3em;
+                padding: 0 24px 30px 24px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .sidebar .brand span {
+                    color: #4f46e5;
+                }
+
+            .sidebar nav {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex: 1;
+            }
+
+                .sidebar nav a {
+                    color: #4b5563;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.95em;
+                    font-weight: 500;
+                    border-left: 3px solid transparent;
+                }
+
+                    .sidebar nav a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar nav a.active {
+                        background-color: #eef2ff;
+                        color: #4f46e5;
+                        border-left: 3px solid #4f46e5;
+                        font-weight: 600;
+                    }
+
+            .sidebar .bottom-links {
+                border-top: 1px solid #e5e7eb;
+                padding-top: 14px;
+            }
+
+                .sidebar .bottom-links a {
+                    color: #6b7280;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.9em;
+                    display: block;
+                }
+
+                    .sidebar .bottom-links a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar .bottom-links a.logout {
+                        color: #ef4444;
+                    }
+
+                        .sidebar .bottom-links a.logout:hover {
+                            background-color: #fef2f2;
+                            color: #dc2626;
+                        }
+
+        /* Main content */
+        .main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 24px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+        th {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-weight: 600;
+            text-align: left;
+            padding: 14px;
+            font-size: 0.9em;
+        }
+
+        td {
+            padding: 14px;
+            border-top: 1px solid #f3f4f6;
+            font-size: 0.95em;
+            vertical-align: middle;
+        }
+
+        .label {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .label-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .label-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .label-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .label-default {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 6px;
+            margin-bottom: 4px;
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+
+            .btn-success:hover {
+                background-color: #059669;
+            }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+            .btn-danger:hover {
+                background-color: #dc2626;
+            }
+
+        .btn-info {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+            .btn-info:hover {
+                background-color: #2563eb;
+            }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 50px;
+            text-align: center;
+            color: #6b7280;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="@Url.Action("Index", "Home")" class="brand">Tutor<span>Book</span></a>
+        <nav>
+            <a href="@Url.Action("Index", "Bookings")">My Bookings</a>
+            <a href="@Url.Action("Index", "TimeSlots")">Manage Sessions</a>
+            <a href="@Url.Action("Analytics", "Bookings")">Analytics</a>
+        </nav>
+        <div class="bottom-links">
+            <a href="@Url.Action("Index", "Home")">← Back to Home</a>
+            <a href="@Url.Action("Logout", "Account")" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="main">
+        <h2>My Bookings</h2>
+
+        @if (Model.Any())
+        {
+            <table>
+                <tr>
+                    <th>Student</th>
+                    <th>Contact</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Actions</th>
+                </tr>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td>@b.Student.Name</td>
+                        <td>@b.Student.Contact</td>
+                        <td>@b.Student.Subject</td>
+                        <td>@b.TimeSlot.Date.ToShortDateString()</td>
+                        <td>@b.TimeSlot.StartTime - @b.TimeSlot.EndTime</td>
+                        <td>
+                            <span class="label label-@(b.Status == "Confirmed" ? "success" : b.Status == "Cancelled" ? "danger" : "warning")">
+                                @b.Status
+                            </span>
+                        </td>
+                        <td>
+                            <span class="label label-@(b.PaymentStatus == "Paid" ? "success" : "default")">
+                                @b.PaymentStatus
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            @if (b.Status != "Confirmed")
+                            {
+                                using (Html.BeginForm("UpdateStatus", "Bookings", new { id = b.BookingId, status = "Confirmed" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success">Confirm</button>
+                                }
+                            }
+                            @if (b.Status != "Cancelled")
+                            {
+                                using (Html.BeginForm("UpdateStatus", "Bookings", new { id = b.BookingId, status = "Cancelled" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">Cancel</button>
+                                }
+                            }
+                            @if (b.PaymentStatus != "Paid")
+                            {
+                                using (Html.BeginForm("MarkPaid", "Bookings", new { id = b.BookingId }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-info">Mark Paid</button>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">No bookings yet.</div>
+        }
+    </div>
+</body>
+</html>

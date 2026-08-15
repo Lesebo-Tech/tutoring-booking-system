@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Book a Session";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Book a Session</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(180deg, #eef2ff 0%, #fafbfc 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+            .card h2 {
+                font-weight: 700;
+                color: #111827;
+                margin-bottom: 24px;
+                text-align: center;
+            }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 6px;
+                font-size: 0.9em;
+            }
+
+        .form-control {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 10px 14px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #4f46e5;
+                box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            }
+
+        .btn-primary {
+            width: 100%;
+            background-color: #4f46e5;
+            border: none;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+            .btn-primary:hover {
+                background-color: #4338ca;
+            }
+
+        .validation-summary-errors {
+            color: #991b1b;
+            background-color: #fee2e2;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 0.9em;
+        }
+
+            .validation-summary-errors ul {
+                margin: 0;
+                padding-left: 18px;
+            }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #6b7280;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                color: #4f46e5;
+            }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Book a Session</h2>
+
+        @Html.ValidationSummary(true)
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="Name" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Contact (WhatsApp number or email)</label>
+                <input type="text" name="Contact" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Subject</label>
+                <select name="Subject" class="form-control" required>
+                    <option value="">-- Select a subject --</option>
+                    <option value="Maths Lit">Maths Lit</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Grade</label>
+                <select name="Subject" class="form-control" required>
+                    <option value="">-- Select a grade --</option>
+                    <option value="Grade">Grade 12</option>
+                    
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Available Slot</label>
+                @Html.DropDownList("TimeSlotId", (SelectList)ViewBag.TimeSlotId, "-- Select a time --", new { @class = "form-control" })
+            </div>
+
+            <button type="submit" class="btn-primary">Book Now</button>
+        }
+
+        <a href="@Url.Action("Index", "Home")" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

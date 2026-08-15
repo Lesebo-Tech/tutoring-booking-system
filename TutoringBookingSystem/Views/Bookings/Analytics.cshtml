@@ -1,0 +1,320 @@
+﻿@{
+    ViewBag.Title = "Analytics";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fafbfc;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+            .sidebar .brand {
+                color: #111827;
+                font-weight: 700;
+                font-size: 1.3em;
+                padding: 0 24px 30px 24px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .sidebar .brand span {
+                    color: #4f46e5;
+                }
+
+            .sidebar nav {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex: 1;
+            }
+
+                .sidebar nav a {
+                    color: #4b5563;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.95em;
+                    font-weight: 500;
+                    border-left: 3px solid transparent;
+                }
+
+                    .sidebar nav a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar nav a.active {
+                        background-color: #eef2ff;
+                        color: #4f46e5;
+                        border-left: 3px solid #4f46e5;
+                        font-weight: 600;
+                    }
+
+            .sidebar .bottom-links {
+                border-top: 1px solid #e5e7eb;
+                padding-top: 14px;
+            }
+
+                .sidebar .bottom-links a {
+                    color: #6b7280;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.9em;
+                    display: block;
+                }
+
+                    .sidebar .bottom-links a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar .bottom-links a.logout {
+                        color: #ef4444;
+                    }
+
+                        .sidebar .bottom-links a.logout:hover {
+                            background-color: #fef2f2;
+                            color: #dc2626;
+                        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 24px 0;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+            .stat-card .label {
+                color: #6b7280;
+                font-size: 0.85em;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .stat-card .value {
+                font-size: 1.8em;
+                font-weight: 800;
+                color: #111827;
+            }
+
+            .stat-card.confirmed .value {
+                color: #059669;
+            }
+
+            .stat-card.cancelled .value {
+                color: #dc2626;
+            }
+
+            .stat-card.pending .value {
+                color: #d97706;
+            }
+
+        .section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+
+            .section h3 {
+                margin: 0 0 18px 0;
+                font-size: 1.05em;
+                color: #111827;
+            }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 260px;
+        }
+
+            .chart-container.bar {
+                height: 220px;
+            }
+
+        @@media (max-width: 900px) {
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="@Url.Action("Index", "Home")" class="brand">Tutor<span>Book</span></a>
+        <nav>
+            <a href="@Url.Action("Index", "Bookings")">My Bookings</a>
+            <a href="@Url.Action("Index", "TimeSlots")">Manage Sessions</a>
+            <a href="@Url.Action("Analytics", "Bookings")" class="active">Analytics</a>
+        </nav>
+        <div class="bottom-links">
+            <a href="@Url.Action("Index", "Home")">← Back to Home</a>
+            <a href="@Url.Action("Logout", "Account")" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="main">
+        <h2>Analytics</h2>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="label">Total Bookings</div>
+                <div class="value">@ViewBag.TotalBookings</div>
+            </div>
+            <div class="stat-card confirmed">
+                <div class="label">Confirmed</div>
+                <div class="value">@ViewBag.ConfirmedCount</div>
+            </div>
+            <div class="stat-card cancelled">
+                <div class="label">Cancelled</div>
+                <div class="value">@ViewBag.CancelledCount</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="label">Pending</div>
+                <div class="value">@ViewBag.PendingCount</div>
+            </div>
+        </div>
+
+        <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="stat-card">
+                <div class="label">Paid Sessions</div>
+                <div class="value">@ViewBag.PaidSessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Unpaid (Confirmed)</div>
+                <div class="value">@ViewBag.UnpaidSessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Sessions This Month</div>
+                <div class="value">@ViewBag.SessionsThisMonth</div>
+            </div>
+        </div>
+
+        <div class="stat-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="section">
+                <h3>Bookings Over Last 6 Months</h3>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+            <div class="section">
+                <h3>Bookings by Subject</h3>
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Bookings by Status</h3>
+            <div class="chart-container bar">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <script>
+            const monthlyLabels = @Html.Raw(ViewBag.MonthlyLabels);
+            const monthlyCounts = @Html.Raw(ViewBag.MonthlyCounts);
+            const statusLabels = @Html.Raw(ViewBag.StatusLabels);
+            const statusCounts = @Html.Raw(ViewBag.StatusCounts);
+            const subjectLabels = @Html.Raw(ViewBag.SubjectLabelsJson);
+            const subjectCounts = @Html.Raw(ViewBag.SubjectCountsJson);
+
+            new Chart(document.getElementById('lineChart'), {
+                type: 'line',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: 'Bookings',
+                        data: monthlyCounts,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79,70,229,0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+            new Chart(document.getElementById('pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: subjectLabels,
+                    datasets: [{
+                        data: subjectCounts,
+                        backgroundColor: ['#4f46e5', '#818cf8', '#c7d2fe', '#a5b4fc']
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        label: 'Bookings',
+                        data: statusCounts,
+                        backgroundColor: ['#fbbf24', '#10b981', '#3b82f6', '#ef4444']
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

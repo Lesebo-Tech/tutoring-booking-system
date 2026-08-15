@@ -1,0 +1,104 @@
+﻿@model TutoringBookingSystem.Models.Booking
+
+@{
+    ViewBag.Title = "Booking Confirmed";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Booking Confirmed</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(180deg, #eef2ff 0%, #fafbfc 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 460px;
+            text-align: center;
+        }
+
+        .check-icon {
+            width: 56px;
+            height: 56px;
+            background-color: #d1fae5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 28px;
+            color: #065f46;
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 12px;
+            font-size: 1.4em;
+        }
+
+        p {
+            color: #6b7280;
+            margin: 8px 0;
+        }
+
+        .status-label {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            background-color: #fef3c7;
+            color: #92400e;
+            margin: 6px 0 20px 0;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: #4f46e5;
+            border: none;
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1em;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+            .btn-primary:hover {
+                background-color: #4338ca;
+                color: #ffffff;
+            }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="check-icon">✓</div>
+        <h2>Your booking request has been received!</h2>
+        <p>We'll confirm your session shortly.</p>
+        <div class="status-label">Status: @Model.Status</div>
+        <br />
+        @Html.ActionLink("Back to Home", "Index", "Home", null, new { @class = "btn-primary" })
+    </div>
+</body>
+</html>

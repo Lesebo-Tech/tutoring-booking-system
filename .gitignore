@@ -3,3 +3,6 @@ bin/
 obj/
 packages/
 *.user
+*.mdf
+*.ldf
+App_Data/

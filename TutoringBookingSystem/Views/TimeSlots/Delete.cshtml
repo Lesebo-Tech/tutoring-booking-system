@@ -1,0 +1,232 @@
+﻿@model TutoringBookingSystem.Models.TimeSlot
+
+@{
+    ViewBag.Title = "Delete Time Slot";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Delete Time Slot</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fafbfc;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+            .sidebar .brand {
+                color: #111827;
+                font-weight: 700;
+                font-size: 1.3em;
+                padding: 0 24px 30px 24px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .sidebar .brand span {
+                    color: #4f46e5;
+                }
+
+            .sidebar nav {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex: 1;
+            }
+
+                .sidebar nav a {
+                    color: #4b5563;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.95em;
+                    font-weight: 500;
+                    border-left: 3px solid transparent;
+                }
+
+                    .sidebar nav a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar nav a.active {
+                        background-color: #eef2ff;
+                        color: #4f46e5;
+                        border-left: 3px solid #4f46e5;
+                        font-weight: 600;
+                    }
+
+            .sidebar .bottom-links {
+                border-top: 1px solid #e5e7eb;
+                padding-top: 14px;
+            }
+
+                .sidebar .bottom-links a {
+                    color: #6b7280;
+                    text-decoration: none;
+                    padding: 12px 24px;
+                    font-size: 0.9em;
+                    display: block;
+                }
+
+                    .sidebar .bottom-links a:hover {
+                        background-color: #f3f4f6;
+                        color: #111827;
+                    }
+
+                    .sidebar .bottom-links a.logout {
+                        color: #ef4444;
+                    }
+
+                        .sidebar .bottom-links a.logout:hover {
+                            background-color: #fef2f2;
+                            color: #dc2626;
+                        }
+
+        /* Main content */
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .warn-icon {
+            width: 56px;
+            height: 56px;
+            background-color: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 26px;
+            color: #991b1b;
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+            font-size: 1.25em;
+        }
+
+        .details {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+            .details p {
+                margin: 6px 0;
+                color: #374151;
+                font-size: 0.95em;
+            }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-danger, .btn-default {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+            .btn-danger:hover {
+                background-color: #dc2626;
+            }
+
+        .btn-default {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+            .btn-default:hover {
+                background-color: #e5e7eb;
+                color: #374151;
+            }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="@Url.Action("Index", "Home")" class="brand">Tutor<span>Book</span></a>
+        <nav>
+            <a href="@Url.Action("Index", "Bookings")">My Bookings</a>
+            <a href="@Url.Action("Index", "TimeSlots")">Manage Sessions</a>
+            <a href="@Url.Action("Analytics", "Bookings")">Analytics</a>
+        </nav>
+        <div class="bottom-links">
+            <a href="@Url.Action("Index", "Home")">← Back to Home</a>
+            <a href="@Url.Action("Logout", "Account")" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="card">
+            <div class="warn-icon">!</div>
+            <h2>Delete this time slot?</h2>
+
+            <div class="details">
+                <p><strong>Date:</strong> @Model.Date.ToShortDateString()</p>
+                <p><strong>Time:</strong> @Model.StartTime - @Model.EndTime</p>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="btn-row">
+                    <button type="submit" class="btn-danger">Delete</button>
+                    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn-default" })
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>

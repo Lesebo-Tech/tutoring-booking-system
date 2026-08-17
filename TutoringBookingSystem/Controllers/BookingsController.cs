@@ -26,17 +26,24 @@ namespace TutoringBookingSystem.Controllers
             return View(bookings);
         }
 
-
-
         [AllowAnonymous]
         // GET: Bookings/Create (student-facing booking form)
         public ActionResult Create()
         {
-            // Only show slots that are NOT booked yet
+            var openSlots = db.TimeSlots
+                               .Where(s => !s.IsBooked)
+                               .OrderBy(s => s.Date).ThenBy(s => s.StartTime)
+                               .ToList();
+
             ViewBag.TimeSlotId = new SelectList(
-                db.TimeSlots.Where(s => !s.IsBooked).OrderBy(s => s.Date).ThenBy(s => s.StartTime),
-                "TimeSlotId", "Date"
+                openSlots.Select(s => new SelectListItem
+                {
+                    Value = s.TimeSlotId.ToString(),
+                    Text = s.Date.ToString("dd MMM yyyy") + " — " + s.StartTime.ToString(@"hh\:mm") + " to " + s.EndTime.ToString(@"hh\:mm")
+                }),
+                "Value", "Text"
             );
+
             return View();
         }
 
@@ -44,7 +51,6 @@ namespace TutoringBookingSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-
         public ActionResult Create(string Name, string Contact, string Subject, string Grade, int TimeSlotId)
         {
             // Re-check the slot right before booking — this is the actual double-booking guard
@@ -53,10 +59,21 @@ namespace TutoringBookingSystem.Controllers
             if (slot == null || slot.IsBooked)
             {
                 ModelState.AddModelError("", "Sorry, that slot was just booked by someone else. Please choose another.");
+
+                var openSlots = db.TimeSlots
+                                   .Where(s => !s.IsBooked)
+                                   .OrderBy(s => s.Date).ThenBy(s => s.StartTime)
+                                   .ToList();
+
                 ViewBag.TimeSlotId = new SelectList(
-                    db.TimeSlots.Where(s => !s.IsBooked).OrderBy(s => s.Date).ThenBy(s => s.StartTime),
-                    "TimeSlotId", "Date"
+                    openSlots.Select(s => new SelectListItem
+                    {
+                        Value = s.TimeSlotId.ToString(),
+                        Text = s.Date.ToString("dd MMM yyyy") + " — " + s.StartTime.ToString(@"hh\:mm") + " to " + s.EndTime.ToString(@"hh\:mm")
+                    }),
+                    "Value", "Text"
                 );
+
                 return View();
             }
 
@@ -90,7 +107,6 @@ namespace TutoringBookingSystem.Controllers
             return RedirectToAction("Confirmation", new { id = booking.BookingId });
         }
 
-
         [AllowAnonymous]
         // GET: Bookings/Confirmation/5
         public ActionResult Confirmation(int id)
@@ -99,8 +115,6 @@ namespace TutoringBookingSystem.Controllers
             if (booking == null) return HttpNotFound();
             return View(booking);
         }
-
-        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -114,7 +128,6 @@ namespace TutoringBookingSystem.Controllers
             }
             return RedirectToAction("Index");
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -178,10 +191,10 @@ namespace TutoringBookingSystem.Controllers
             var unpaidSessions = bookings.Count(b => b.PaymentStatus == "Unpaid" && b.Status == "Confirmed");
 
             var subjectBreakdown = bookings
-    .GroupBy(b => b.Student.Subject)
-    .Select(g => new SubjectStat { Subject = g.Key, Count = g.Count() })
-    .OrderByDescending(g => g.Count)
-    .ToList();
+                .GroupBy(b => b.Student.Subject)
+                .Select(g => new SubjectStat { Subject = g.Key, Count = g.Count() })
+                .OrderByDescending(g => g.Count)
+                .ToList();
 
             var thisMonth = DateTime.Now.Month;
             var thisYear = DateTime.Now.Year;
@@ -198,7 +211,6 @@ namespace TutoringBookingSystem.Controllers
             ViewBag.UnpaidSessions = unpaidSessions;
             ViewBag.SubjectBreakdown = subjectBreakdown;
             ViewBag.SessionsThisMonth = sessionsThisMonth;
-
 
             // Bookings per month (last 6 months) — for the line chart
             var last6Months = Enumerable.Range(0, 6)
@@ -222,10 +234,8 @@ namespace TutoringBookingSystem.Controllers
             ViewBag.SubjectLabelsJson = Newtonsoft.Json.JsonConvert.SerializeObject(subjectBreakdown.Select(s => s.Subject).ToList());
             ViewBag.SubjectCountsJson = Newtonsoft.Json.JsonConvert.SerializeObject(subjectBreakdown.Select(s => s.Count).ToList());
 
-
             return View();
         }
-
 
         protected override void Dispose(bool disposing)
         {

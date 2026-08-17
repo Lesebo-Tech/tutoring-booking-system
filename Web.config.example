@@ -1,0 +1,17 @@
+<connectionStrings>
+  <add name="TutoringConnectionString"
+       connectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TutoringDB;Integrated Security=True"
+       providerName="System.Data.SqlClient" />
+</connectionStrings>
+
+<system.net>
+  <mailSettings>
+    <smtp from="your-email@gmail.com">
+      <network host="smtp.gmail.com" port="587" userName="your-email@gmail.com" password="YOUR_APP_PASSWORD_HERE" enableSsl="true" />
+    </smtp>
+  </mailSettings>
+</system.net>
+
+<authentication mode="Forms">
+  <forms loginUrl="~/Account/Login" timeout="2880" />
+</authentication>

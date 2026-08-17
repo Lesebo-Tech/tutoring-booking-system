@@ -6,3 +6,4 @@ packages/
 *.mdf
 *.ldf
 App_Data/
+Web.config

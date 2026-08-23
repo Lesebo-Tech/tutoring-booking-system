@@ -29,6 +29,12 @@ namespace TutoringBookingSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TimeSlot slot)
         {
+            if (slot.EndTime <= slot.StartTime)
+            {
+                ModelState.AddModelError("", "End time must be after start time.");
+                return View(slot);
+            }
+
             if (ModelState.IsValid)
             {
                 slot.IsBooked = false;   // every new slot starts open

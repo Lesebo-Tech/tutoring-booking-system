@@ -53,6 +53,28 @@ namespace TutoringBookingSystem.Controllers
         [AllowAnonymous]
         public ActionResult Create(string Name, string Contact, string Subject, string Grade, int TimeSlotId)
         {
+            // Server-side validation — protects against bypassed client-side checks
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Contact) || string.IsNullOrWhiteSpace(Subject))
+            {
+                ModelState.AddModelError("", "Please fill in all required fields.");
+
+                var invalidOpenSlots = db.TimeSlots
+                                   .Where(s => !s.IsBooked)
+                                   .OrderBy(s => s.Date).ThenBy(s => s.StartTime)
+                                   .ToList();
+
+                ViewBag.TimeSlotId = new SelectList(
+                    invalidOpenSlots.Select(s => new SelectListItem
+                    {
+                        Value = s.TimeSlotId.ToString(),
+                        Text = s.Date.ToString("dd MMM yyyy") + " — " + s.StartTime.ToString(@"hh\:mm") + " to " + s.EndTime.ToString(@"hh\:mm")
+                    }),
+                    "Value", "Text"
+                );
+
+                return View();
+            }
+
             // Re-check the slot right before booking — this is the actual double-booking guard
             var slot = db.TimeSlots.Find(TimeSlotId);
 
@@ -86,9 +108,8 @@ namespace TutoringBookingSystem.Controllers
                 Grade = Grade
             };
             db.Students.Add(student);
-            db.SaveChanges(); // save now so student.StudentId is generated
+            db.SaveChanges();
 
-            // Create the booking
             var booking = new Booking
             {
                 StudentId = student.StudentId,
@@ -99,7 +120,6 @@ namespace TutoringBookingSystem.Controllers
             };
             db.Bookings.Add(booking);
 
-            // Lock the slot so nobody else can book it
             slot.IsBooked = true;
 
             db.SaveChanges();

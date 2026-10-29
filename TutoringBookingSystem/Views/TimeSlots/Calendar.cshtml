@@ -1,0 +1,610 @@
+﻿
+@model IEnumerable<TutoringBookingSystem.Models.TimeSlot>
+
+@{
+    ViewBag.Title = "Availability Calendar";
+    Layout = null;
+
+    DateTime monday = (DateTime)ViewBag.WeekStart;
+    DateTime previousWeek = (DateTime)ViewBag.PreviousWeek;
+    DateTime nextWeek = (DateTime)ViewBag.NextWeek;
+
+    var slots = Model.ToList();
+
+
+    int startHour = 8;
+    int endHour = 16;
+    int hourHeight = 48;
+
+
+    int calendarHeight = (endHour - startHour) * hourHeight;
+
+    int availableCount = slots.Count(s => !s.IsBooked);
+    int bookedCount = slots.Count(s => s.IsBooked);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Availability Calendar - TutorBook</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fafbfc;
+            color: #1f2937;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .brand {
+            display: block;
+            padding: 0 24px 30px;
+            color: #111827;
+            font-size: 1.3em;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: #4f46e5;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 12px 24px;
+            border-left: 3px solid transparent;
+            color: #4b5563;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .sidebar nav a:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .sidebar nav a.active {
+            background: #eef2ff;
+            border-left-color: #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .bottom-links {
+            padding-top: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .bottom-links a {
+            display: block;
+            padding: 12px 24px;
+            color: #6b7280;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+
+        .bottom-links a:hover {
+            background: #f3f4f6;
+        }
+
+        .bottom-links a.logout {
+            color: #ef4444;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 24px 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 5px;
+            color: #111827;
+            font-size: 24px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            color: #ffffff;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            padding: 14px 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .stat-number {
+            margin-top: 5px;
+            color: #111827;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .calendar-card {
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .calendar-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .calendar-toolbar h2 {
+            margin: 0;
+            color: #111827;
+            font-size: 16px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .nav-buttons a {
+            display: inline-block;
+            padding: 7px 11px;
+            border: 1px solid #e5e7eb;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .nav-buttons a:hover {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .legend {
+            display: flex;
+            gap: 18px;
+            padding: 10px 18px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .dot.available {
+            background: #22c55e;
+        }
+
+        .dot.booked {
+            background: #4f46e5;
+        }
+
+        /* Scroll only the calendar area */
+        .calendar-scroll {
+            max-height: 440px;
+            overflow: auto;
+        }
+
+        .calendar-inner {
+            min-width: 820px;
+        }
+
+        .day-headings {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: grid;
+            grid-template-columns: 60px repeat(7, minmax(0, 1fr));
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+        }
+
+        .day-heading {
+            padding: 10px 4px;
+            border-left: 1px solid #f3f4f6;
+            text-align: center;
+        }
+
+        .day-heading strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .day-heading span {
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 60px repeat(7, minmax(0, 1fr));
+        }
+
+        .time-column {
+            position: relative;
+            height: @(calendarHeight)px;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .time-label {
+            position: absolute;
+            left: 8px;
+            color: #6b7280;
+            font-size: 11px;
+            transform: translateY(-50%);
+        }
+
+        .day-column {
+            position: relative;
+            height: @(calendarHeight)px;
+            border-right: 1px solid #f3f4f6;
+            background-image: linear-gradient(
+                to bottom,
+                #e5e7eb 1px,
+                transparent 1px
+            );
+            background-size: 100% @(hourHeight)px;
+        }
+
+        .appointment {
+            position: absolute;
+            left: 3px;
+            right: 3px;
+            z-index: 1;
+            overflow: hidden;
+            padding: 3px 5px;
+            border-left: 3px solid;
+            border-radius: 5px;
+            font-size: 10px;
+            line-height: 1.2;
+        }
+
+        .appointment strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .appointment.available {
+            border-color: #22c55e;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .appointment.booked {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .calendar-note {
+            padding: 10px 18px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        @@media (max-width: 900px) {
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                padding: 18px;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            body {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main {
+                padding: 14px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-scroll {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <a href="@Url.Action("Index", "Home")"
+           class="brand">
+            Tutor<span>Book</span>
+        </a>
+
+        <nav>
+            <a href="@Url.Action("Index", "Bookings")">
+                My Bookings
+            </a>
+
+            <a href="@Url.Action("Index", "TimeSlots")">
+                Manage Sessions
+            </a>
+
+            <a href="@Url.Action("Calendar", "TimeSlots")"
+               class="active">
+                Availability Calendar
+            </a>
+
+            <a href="@Url.Action("Analytics", "Bookings")">
+                Analytics
+            </a>
+        </nav>
+
+        <div class="bottom-links">
+            <a href="@Url.Action("Index", "Home")">
+                ← Back to Home
+            </a>
+
+            <a href="@Url.Action("Logout", "Account")"
+               class="logout">
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1>Availability Calendar</h1>
+                <p>View and manage your weekly tutoring schedule.</p>
+            </div>
+
+            <a href="@Url.Action("Create", "TimeSlots")"
+               class="btn-primary">
+                + Add New Slot
+            </a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Slots This Week</div>
+                <div class="stat-number">@slots.Count</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Available Slots</div>
+                <div class="stat-number">@availableCount</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Booked Slots</div>
+                <div class="stat-number">@bookedCount</div>
+            </div>
+        </div>
+
+        <div class="calendar-card">
+
+            <div class="calendar-toolbar">
+                <h2>
+                    @monday.ToString("dd MMM yyyy") -
+                    @monday.AddDays(6).ToString("dd MMM yyyy")
+                </h2>
+
+                <div class="nav-buttons">
+                    <a href="@Url.Action("Calendar", "TimeSlots",
+                        new {
+                            weekStart = previousWeek.ToString("yyyy-MM-dd")
+                        })">
+                        ← Previous
+                    </a>
+
+                    <a href="@Url.Action("Calendar", "TimeSlots")">
+                        Today
+                    </a>
+
+                    <a href="@Url.Action("Calendar", "TimeSlots",
+                        new {
+                            weekStart = nextWeek.ToString("yyyy-MM-dd")
+                        })">
+                        Next →
+                    </a>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="dot available"></span>
+                    Available
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot booked"></span>
+                    Booked
+                </div>
+            </div>
+
+            <div class="calendar-scroll">
+                <div class="calendar-inner">
+
+                    <div class="day-headings">
+                        <div></div>
+
+                        @for (int day = 0; day < 7; day++)
+                        {
+                            DateTime date = monday.AddDays(day);
+
+                            <div class="day-heading">
+                                <strong>@date.ToString("ddd")</strong>
+                                <span>@date.ToString("dd MMM")</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="schedule-grid">
+
+                        <div class="time-column">
+                            @for (int hour = startHour;
+                                  hour <= endHour;
+                                  hour++)
+                            {
+                                int top =
+                                    (hour - startHour) * hourHeight;
+
+                                <span class="time-label"
+                                      style="top:@(top)px">
+                                    @hour.ToString("00"):00
+                                </span>
+                            }
+                        </div>
+
+                        @for (int day = 0; day < 7; day++)
+                        {
+                            DateTime currentDay = monday.AddDays(day);
+
+                            var daySlots = slots
+                                .Where(s => s.Date.Date == currentDay.Date)
+                                .OrderBy(s => s.StartTime)
+                                .ToList();
+
+                            <div class="day-column">
+
+                                @foreach (var slot in daySlots)
+                                {
+                                    double startMinutes =
+                                        slot.StartTime.TotalMinutes -
+                                        startHour * 60;
+
+                                    double durationMinutes =
+                                        (slot.EndTime - slot.StartTime)
+                                        .TotalMinutes;
+
+                                    double top =
+                                        startMinutes / 60 * hourHeight;
+
+                                    double height =
+                                        durationMinutes / 60 * hourHeight;
+
+                                    if (top >= 0 &&
+                                        top < calendarHeight &&
+                                        height > 0)
+                                    {
+                                        <div class="appointment @(slot.IsBooked ? "booked" : "available")"
+                                             title="@slot.StartTime.ToString(@"hh\:mm") - @slot.EndTime.ToString(@"hh\:mm")"
+                                             style="top:@(top.ToString(System.Globalization.CultureInfo.InvariantCulture))px;
+                                                    height:@(height.ToString(System.Globalization.CultureInfo.InvariantCulture))px">
+
+                                            <strong>
+                                                @slot.StartTime.ToString(@"hh\:mm")
+                                                -
+                                                @slot.EndTime.ToString(@"hh\:mm")
+                                            </strong>
+
+                                            <span>
+                                                @(slot.IsBooked
+                                                    ? "Booked"
+                                                    : "Available")
+                                            </span>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-note">
+                Showing tutoring sessions from 07:00 to 21:00.
+                Scroll inside the calendar to view later hours.
+                Manage availability using the Add New Slot button.
+            </div>
+        </div>
+    </main>
+</body>
+</html>

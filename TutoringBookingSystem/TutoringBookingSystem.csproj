@@ -208,6 +208,7 @@
     <Content Include="Views\Bookings\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Bookings\Analytics.cshtml" />
+    <Content Include="Views\TimeSlots\Calendar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -105,6 +105,40 @@ namespace TutoringBookingSystem.Controllers
             return RedirectToAction("Index");
         }
 
+
+        // GET: TimeSlots/Calendar
+        public ActionResult Calendar(DateTime? weekStart)
+        {
+            // Use the current week if no date is provided.
+            DateTime selectedDate =
+                (weekStart ?? DateTime.Today).Date;
+
+            // Calculate Monday of the selected week.
+            int daysFromMonday =
+                ((int)selectedDate.DayOfWeek + 6) % 7;
+
+            DateTime monday =
+                selectedDate.AddDays(-daysFromMonday);
+
+            DateTime nextMonday = monday.AddDays(7);
+
+            // Retrieve sessions for the selected week.
+            var slots = db.TimeSlots
+                .Where(s => s.Date >= monday &&
+                            s.Date < nextMonday)
+                .OrderBy(s => s.Date)
+                .ThenBy(s => s.StartTime)
+                .ToList();
+
+            // Send the selected week to the Razor view.
+            ViewBag.WeekStart = monday;
+            ViewBag.PreviousWeek = monday.AddDays(-7);
+            ViewBag.NextWeek = monday.AddDays(7);
+
+            return View(slots);
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -223,9 +223,22 @@
     <div class="sidebar">
         <a href="@Url.Action("Index", "Home")" class="brand">Tutor<span>Book</span></a>
         <nav>
-            <a href="@Url.Action("Index", "Bookings")">My Bookings</a>
-            <a href="@Url.Action("Index", "TimeSlots")">Manage Sessions</a>
-            <a href="@Url.Action("Analytics", "Bookings")">Analytics</a>
+            <a href="@Url.Action("Index", "Bookings")">
+                My Bookings
+            </a>
+
+            <a href="@Url.Action("Index", "TimeSlots")">
+                Manage Sessions
+            </a>
+
+            <a href="@Url.Action("Calendar", "TimeSlots")"
+               class="active">
+                Availability Calendar
+            </a>
+
+            <a href="@Url.Action("Analytics", "Bookings")">
+                Analytics
+            </a>
         </nav>
         <div class="bottom-links">
             <a href="@Url.Action("Index", "Home")">← Back to Home</a>
